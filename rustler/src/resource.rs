@@ -35,6 +35,8 @@ pub struct ResourceType<T> {
 /// In most cases the user should not have to worry about this.
 #[doc(hidden)]
 pub trait ResourceTypeProvider: Sized + Send + Sync + 'static {
+    type Type;
+
     fn get_type() -> &'static ResourceType<Self>;
 }
 
@@ -256,6 +258,8 @@ macro_rules! resource {
             unsafe { STRUCT_TYPE = Some(temp_struct_type) };
 
             impl $crate::resource::ResourceTypeProvider for $struct_name {
+                type Type = $struct_name;
+
                 fn get_type() -> &'static $crate::resource::ResourceType<Self> {
                     unsafe { &STRUCT_TYPE }.as_ref()
                         .expect("The resource type hasn't been initialized. Did you remember to call the function where you used the `resource!` macro?")
