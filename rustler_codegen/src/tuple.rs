@@ -34,8 +34,8 @@ pub fn transcoder_decorator(ast: &syn::DeriveInput) -> TokenStream {
 }
 
 fn gen_decoder(ctx: &Context, fields: &[&Field]) -> TokenStream {
-    let struct_type = &ctx.ident_with_lifetime;
     let struct_name = ctx.ident;
+    let struct_generics = ctx.generics;
     let struct_name_str = struct_name.to_string();
 
     // Make a decoder for each of the fields in the struct.
@@ -82,7 +82,7 @@ fn gen_decoder(ctx: &Context, fields: &[&Field]) -> TokenStream {
         }
     };
     let gen = quote! {
-        impl<'a> ::rustler::Decoder<'a> for #struct_type {
+        impl<'a> ::rustler::Decoder<'a> for #struct_name #struct_generics {
             fn decode(term: ::rustler::Term<'a>) -> ::rustler::NifResult<Self> {
                 let terms = ::rustler::types::tuple::get_tuple(term)?;
                 if terms.len() != #field_num {
@@ -108,7 +108,8 @@ fn gen_decoder(ctx: &Context, fields: &[&Field]) -> TokenStream {
 }
 
 fn gen_encoder(ctx: &Context, fields: &[&Field]) -> TokenStream {
-    let struct_type = &ctx.ident_with_lifetime;
+    let struct_name = ctx.ident;
+    let struct_generics = ctx.generics;
 
     // Make a field encoder expression for each of the items in the struct.
     let field_encoders: Vec<TokenStream> = fields
@@ -132,7 +133,7 @@ fn gen_encoder(ctx: &Context, fields: &[&Field]) -> TokenStream {
 
     // The implementation itself
     let gen = quote! {
-        impl ::rustler::Encoder for #struct_type {
+        impl ::rustler::Encoder for #struct_name #struct_generics {
             fn encode<'a>(&self, env: ::rustler::Env<'a>) -> ::rustler::Term<'a> {
                 use ::rustler::Encoder;
                 let arr = #field_list_ast;
