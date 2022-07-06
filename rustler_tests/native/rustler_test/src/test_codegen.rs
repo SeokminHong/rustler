@@ -75,6 +75,12 @@ pub fn exception_echo(add_exception: AddException) -> AddException {
     add_exception
 }
 
+#[derive(NifMap)]
+pub struct WithLifetimes<'a, 'b> {
+    pub i: &'a i32,
+    pub j: &'b i32,
+}
+
 #[derive(NifUnitEnum)]
 pub enum UnitEnum {
     FooBar,
