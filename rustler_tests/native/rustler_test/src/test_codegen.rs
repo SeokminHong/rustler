@@ -76,9 +76,9 @@ pub fn exception_echo(add_exception: AddException) -> AddException {
 }
 
 #[derive(NifMap)]
-pub struct WithLifetimes<'x, 'y> {
-    pub i: rustler::Binary<'x>,
-    pub j: rustler::Binary<'y>,
+pub struct WithLifetimes<'a, 'b> {
+    pub i: rustler::Binary<'a>,
+    pub j: rustler::Binary<'b>,
 }
 
 #[derive(NifUnitEnum)]

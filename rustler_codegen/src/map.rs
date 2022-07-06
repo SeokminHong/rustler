@@ -130,7 +130,10 @@ fn gen_encoder(ctx: &Context, fields: &[&Field], atoms_module_name: &Ident) -> T
 
     let gen = quote! {
         impl<#(#struct_lifetimes, )*> ::rustler::Encoder for #struct_name #struct_generics {
-            fn encode<'a>(&self, env: ::rustler::Env<'a>) -> ::rustler::Term<'a> {
+            fn encode<'__rustler_encode>(
+                &self,
+                env: ::rustler::Env<'__rustler_encode>,
+            ) -> ::rustler::Term<'__rustler_encode> {
                 use #atoms_module_name::*;
 
                 let mut map = ::rustler::types::map::map_new(env);
